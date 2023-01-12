@@ -246,7 +246,7 @@ public class ListMapSheet extends ListSheet<Map<String, ?>> {
 
         @SuppressWarnings("unchecked")
         List<Dimension> existsMergeCells = (List<Dimension>) getExtPropValue(Const.ExtendPropertyKey.MERGE_CELLS);
-        if (existsMergeCells != null) {
+        if (existsMergeCells != null && !existsMergeCells.isEmpty()) {
             Grid grid = GridFactory.create(existsMergeCells);
             for (org.ttzero.excel.entity.Column col : columns) {
                 if (StringUtil.isEmpty(col.key) && grid.test(1, col.realColIndex)) {

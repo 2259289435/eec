@@ -102,7 +102,6 @@ public interface ICellValueAndStyle {
         }
         if (clazz == null) {
             clazz = e.getClass();
-            hc.setClazz(clazz);
         }
         if (isString(clazz)) {
             cell.setSv(e.toString());

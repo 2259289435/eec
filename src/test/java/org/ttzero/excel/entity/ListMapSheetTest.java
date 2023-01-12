@@ -19,12 +19,12 @@ package org.ttzero.excel.entity;
 import org.junit.Test;
 import org.ttzero.excel.Print;
 import org.ttzero.excel.entity.style.Fill;
-import org.ttzero.excel.entity.style.Horizontals;
 import org.ttzero.excel.entity.style.PatternType;
 import org.ttzero.excel.entity.style.Styles;
+import org.ttzero.excel.manager.Const;
 import org.ttzero.excel.reader.ExcelReader;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -33,14 +33,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author guanquan.wang at 2019-04-28 19:16
@@ -74,21 +68,27 @@ public class ListMapSheetTest extends WorkbookTest {
     }
 
     @Test public void testStyleDesign4Map2() throws IOException {
-        new Workbook("Map标识行样式2", author)
-            .addSheet(new ListMapSheet("Map", createAllTypeData(100)
-                , new Column("boolean", "bv", boolean.class)
-                , new Column("char", "cv", char.class)
-                , new Column("short", "sv", short.class)
-                , new Column("int", "nv", int.class).setStyleProcessor((n,s,sst) -> ((int) n) < 0 ? Styles.clearHorizontal(s) | Horizontals.LEFT : s).setNumFmt("¥0.00_);[Red]-¥0.00_);¥0_)")
-                , new Column("long", "lv", long.class)
-                , new Column("LocalDateTime", "ldtv", LocalDateTime.class)
-                , new Column("LocalTime", "ltv", LocalTime.class)).setStyleProcessor((map, style, sst)->{
-                if ((Boolean) map.get("bv")) {
-                    style = Styles.clearFill(style) | sst.addFill(new Fill(PatternType.solid, Color.green));
-                }
-                return style;
-            }))
-            .writeTo(defaultTestPath);
+        Workbook workbook = new Workbook("Map标识行样式2", author);
+        Sheet sheet = new ListMapSheet("Map", createAllTypeData(100));
+        Column[] columns = Arrays.asList(
+                new Column("a").addSubColumn(new Column("a1").addSubColumn(new Column("boolean", "bv")))
+                , new Column("a").addSubColumn(new Column("a1").addSubColumn(new Column("char", "cv")))
+                , new Column("a").addSubColumn(new Column("a2").addSubColumn(new Column("short", "sv")))
+                , new Column("int", "nv")
+                , new Column("long", "lv")
+                , new Column("LocalDateTime", "ldtv")
+                , new Column("LocalTime", "ltv")
+        ).toArray(new Column[0]);
+        workbook.addSheet(sheet);
+
+        sheet.setColumns(columns);
+
+        Panes panes = new Panes();
+        panes.setRow(3);
+        sheet.setHeadStyle(0);
+        sheet.putExtPropIfAbsent(Const.ExtendPropertyKey.FREEZE, panes);
+
+        workbook.writeTo(defaultTestPath);
     }
 
     @Test public void testHeaderColumn() throws IOException {

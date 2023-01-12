@@ -371,9 +371,10 @@ public class Font implements Cloneable {
     static Font parseFontTag(Element tag) {
         List<Element> sub = tag.elements();
         Font font = new Font();
+
         for (Element e : sub) {
             switch (e.getName()) {
-                case "sz"     : font.size = Integer.parseInt(getAttr(e, "val"));    break;
+                case "sz"     : font.size = Double.valueOf(getAttr(e, "val")).intValue();    break;
                 case "color"  : font.color = Styles.parseColor(e);                  break;
                 case "name"   : font.name = getAttr(e, "val");                      break;
                 case "charset": font.charset = Integer.parseInt(getAttr(e, "val")); break;
