@@ -164,7 +164,7 @@ public static class RepeatableEntry {
     private String area;
 
     @ExcelColumn(value = "收件地址", comment = @HeaderComment("精确到门牌号"))
-    @ExcelColumn(value = "详细地址")
+    @ExcelColumn("详细地址")
     private String detail;
 }
 ```
@@ -235,6 +235,19 @@ reader.sheets()
 
 以上代码相当于SQL `select * from '用户注册' where platform = 'iOS'`
 
+#### 4. 多表头读取
+
+如果要读取多行表头转对象或者Map时可以通过`Sheet#header(fromRowNum, toRowNum)`来指定表头所在的行号，如上方“记帐类报表”则可以使用如下代码读取
+
+```java
+reader.sheet(0)
+    .header(1, 2) // 指定表头所在的行号
+    .map(Row::toMap) // Row 转 Map
+    .forEach(Print::println)
+```
+
+更多关于多表头使用方法可以参考 [WIKI](https://github.com/wangguanquan/eec/wiki/%E5%A6%82%E4%BD%95%E8%AE%BE%E7%BD%AE%E5%A4%9A%E8%A1%8C%E8%A1%A8%E5%A4%B4#%E8%AF%BB%E5%8F%96%E5%B8%A6%E5%A4%9A%E8%A1%8C%E8%A1%A8%E5%A4%B4%E7%9A%84%E6%96%87%E4%BB%B6)
+
 ### xls格式支持
 
 pom.xml添加如下代码，添加好后即完成了xls的兼容，是的你不需要为xls写任何一行代码，原有的读取文件代码只需要传入xls即可读取，
@@ -243,7 +256,7 @@ pom.xml添加如下代码，添加好后即完成了xls的兼容，是的你不�
 <dependency>
     <groupId>org.ttzero</groupId>
     <artifactId>eec-e3-support</artifactId>
-    <version>0.5.4</version>
+    <version>0.5.6</version>
 </dependency>
 ```
 
@@ -274,6 +287,15 @@ try (ExcelReader reader = ExcelReader.read(testResourceRoot().resolve("1.xlsx"))
 ```
 
 ## CHANGELOG
+Version 0.5.6 (2023-01-07)
+-------------
+- 读取文件时支持指定表头，对于多行表头尤为有效
+- 提供Row#toMap方法将行数据转为LinkedHashMap(#294)
+- 提供Row#isBlank方法用于判断所有单元格的值是否为空(#314)
+- 读取文件转时支持自定义HeaderRow
+- 读文件时支持获取单元格样式
+- 修复部分BUG(#308, #320, #323)
+
 Version 0.5.5 (2022-11-07)
 -------------
 - Row转对象时如果出异常将提示具体的行和列信息(#284)
@@ -297,12 +319,6 @@ Version 0.5.3 (2022-07-25)
 - 优化自动计算列宽的算法使其更精准
 - 修复部分BUG(#264,#265)
 
-Version 0.5.2 (2022-07-16)
--------------
-- (严重)修复大量单元格字节超过1k时导致SST索引读取死循环问题(#258)
-- StatementSheet&ResultSetSheet添加StyleProcessor实现整行样式调整(#235)
-- 修复部分BUG(#257, #260)
-
 
 [更多...](./CHANGELOG)
 
@@ -310,7 +326,7 @@ Version 0.5.2 (2022-07-16)
 [travis-image]: https://travis-ci.org/wangguanquan/eec.png?branch=master
 
 [releases]: https://github.com/wangguanquan/eec/releases
-[release-image]: http://img.shields.io/badge/release-0.5.5-blue.svg?style=flat
+[release-image]: http://img.shields.io/badge/release-0.5.6-blue.svg?style=flat
 
 [license]: http://www.apache.org/licenses/LICENSE-2.0
 [license-image]: http://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
