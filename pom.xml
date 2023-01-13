@@ -113,6 +113,15 @@
 
   <profiles>
     <profile>
+      <id>sdp</id>
+      <distributionManagement>
+        <snapshotRepository>
+          <id>rdc-snapshots</id>
+          <url>https://packages.aliyun.com/maven/repository/2135244-snapshot-rQhtUU/</url>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
+    <profile>
       <id>release</id>
       <build>
         <plugins>

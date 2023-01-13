@@ -17,6 +17,7 @@
 package org.ttzero.excel.entity;
 
 import org.junit.Test;
+import org.ttzero.excel.entity.style.Font;
 import org.ttzero.excel.entity.style.Styles;
 import org.ttzero.excel.processor.StyleProcessor;
 import org.ttzero.excel.reader.ExcelReader;
@@ -89,39 +90,39 @@ public class TemplateTest extends WorkbookTest {
         };
         workbook.addSheet(sheet);
         Column[] columns = Arrays.asList(
-                new Column("表头").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头", 0)).addSubColumn(
-                        new Column("查询1").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头说明", 0)).addSubColumn(
-                                new Column("a", "a").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("列名称", 0))
+                new Column("表头").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表名", 30)).addSubColumn(
+                        new Column("查询1").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表头说明", 20)).addSubColumn(
+                                new Column("a", "a").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "列名称", 40))
                         )
                 )
-                , new Column("表头").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头", 0)).addSubColumn(
-                        new Column("查询1").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头说明", 0)).addSubColumn(
-                                new Column("b", "b").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("列名称", 0))
+                , new Column("表头").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表名", 30)).addSubColumn(
+                        new Column("查询1").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表头说明", 20)).addSubColumn(
+                                new Column("b", "b").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "列名称", 40))
                         )
                 )
-                , new Column("表头").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头", 0)).addSubColumn(
-                        new Column("查询2").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头数值", 0)).addSubColumn(
-                                new Column("c", "c").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("列名称", 0))
+                , new Column("表头").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表名", 30)).addSubColumn(
+                        new Column("查询2").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表头数值", 5)).addSubColumn(
+                                new Column("c", "c").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "列名称", 40))
                         )
                 )
-                , new Column("表头").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头", 0)).addSubColumn(
-                        new Column("查询2").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头数值", 0)).addSubColumn(
-                                new Column("d", "d").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("列名称", 0))
+                , new Column("表头").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表名", 30)).addSubColumn(
+                        new Column("查询2").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表头数值", 5)).addSubColumn(
+                                new Column("d", "d").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "列名称", 40))
                         )
                 )
-                , new Column("表头").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头", 0)).addSubColumn(
-                        new Column("查询3").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头说明", 0)).addSubColumn(
-                                new Column("e", "e").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("列名称", 0))
+                , new Column("表头").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表名", 30)).addSubColumn(
+                        new Column("查询3").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表头说明", 20)).addSubColumn(
+                                new Column("e", "e").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "列名称", 40))
                         )
                 )
-                , new Column("表头").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头", 0)).addSubColumn(
-                        new Column("查询3").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头说明", 0)).addSubColumn(
-                                new Column("f", "f").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("列名称", 0))
+                , new Column("表头").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表名", 30)).addSubColumn(
+                        new Column("查询3").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表头说明", 20)).addSubColumn(
+                                new Column("f", "f").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "列名称", 40))
                         )
                 )
-                , new Column("表头").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头", 0)).addSubColumn(
-                        new Column("查询3").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("表头说明", 0)).addSubColumn(
-                                new Column("g", "g").setHeaderStyle(DEFAULT_KV_STYLES.getOrDefault("列名称", 0))
+                , new Column("表头").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表名", 30)).addSubColumn(
+                        new Column("查询3").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "表头说明", 20)).addSubColumn(
+                                new Column("g", "g").setHeaderStyle(customStyle(workbook, DEFAULT_KV_STYLES, "列名称", 40))
                         )
                 )
         ).toArray(new Column[0]);
@@ -135,15 +136,26 @@ public class TemplateTest extends WorkbookTest {
                 Column column = columns[cur];
                 style = 0;
                 if(o.containsKey("数据行")){
-                    style = DEFAULT_KV_STYLES.getOrDefault("表内居中", 0);
+                    style = customStyle(workbook, DEFAULT_KV_STYLES, "表内居中", 10+cur);
                 }else if(o.containsKey("分组行")){
-                    style = DEFAULT_KV_STYLES.getOrDefault("合计行", 0);
+                    style = customStyle(workbook, DEFAULT_KV_STYLES, "合计行", 20+cur);
                 }
                 idx++;
                 return style;
             }
         });
         workbook.writeTo(defaultTestPath);
+    }
+
+    private static int customStyle(Workbook workbook, Map<String, Integer> kvStyles, String styleName, Integer fontSize){
+        Styles styles = workbook.getStyles();
+        Integer style = kvStyles.getOrDefault(styleName,0);
+        if(fontSize != null){
+            Font font = styles.getFont(style).clone();
+            font.setSize(fontSize);
+            style = Styles.clearFont(style) | styles.addFont(font);
+        }
+        return style;
     }
 
     @Test public void testTemplate() throws IOException {
