@@ -22,7 +22,6 @@ import org.ttzero.excel.annotation.TopNS;
 import org.ttzero.excel.entity.I18N;
 import org.ttzero.excel.entity.Storable;
 import org.ttzero.excel.manager.Const;
-import org.ttzero.excel.reader.ExcelReadException;
 import org.ttzero.excel.util.FileUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -217,10 +216,16 @@ public class Styles implements Storable {
         try {
             document = reader.read(Files.newInputStream(path));
         } catch (DocumentException | IOException e) {
-            throw new ExcelReadException(e);
+            LOGGER.warn("Read the style failed and ignore the style to continue.", e);
+            Styles self = forReader();
+            // Add a default font
+            self.addFont(new Font("Arial", 11, Color.black));
+            return self;
         }
 
         Styles self = new Styles();
+        Path themePath = path.getParent().resolve("theme/theme1.xml");
+        if (Files.exists(themePath) && !Files.isDirectory(themePath)) Theme.load(themePath);
         Element root = document.getRootElement();
 
         // Parse Number format
@@ -699,11 +704,12 @@ public class Styles implements Storable {
         // Indexed color value. Only used for backwards compatibility.
         // References a color in indexedColors.
         else if (StringUtil.isNotEmpty(indexed)) {
-            c = ColorIndex.getColor(Integer.parseInt(indexed));
+            // if indexed greater than 64 means auto.
+            c = new BuildInColor(Integer.parseInt(indexed));
         }
         // A boolean value indicating the color is automatic and system color dependent.
         else if ("1".equals(auto) || "true".equalsIgnoreCase(auto)) {
-            c = ColorIndex.getColor(8);
+            c = new BuildInColor(64);
         }
         // Theme colors
         else if (StringUtil.isNotEmpty(theme)) {
@@ -715,7 +721,6 @@ public class Styles implements Storable {
                 LOGGER.warn("Unknown theme color index {}", t);
                 t = 0;
             }
-            // FIXME read theme.xml
             Color themeColor = ColorIndex.themeColors[t];
             String tint = getAttr(element, "tint");
             c = HlsColor.calculateColor(themeColor, tint);
