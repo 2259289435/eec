@@ -37,7 +37,7 @@ public class StringUtil {
      * {@code false}
      */
     public static boolean isEmpty(String s) {
-        return s == null || s.isEmpty();
+        return s == null || s.isEmpty() || (s.toCharArray().length == 1 && (s.toCharArray()[0] >= 128 || s.toCharArray()[0] <= 159));
     }
 
     /**
